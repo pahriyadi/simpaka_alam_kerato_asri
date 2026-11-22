@@ -448,15 +448,15 @@ $allowBulanan = get_setting('allow_bayar_bulanan', '1') === '1';
         </div>
         <div class="col-12 col-md-7">
           <label class="form-label small fw-semibold">Jenis Iuran</label>
-          <select name="jenis_iuran_id" id="p_jenis" class="form-select form-select-sm" required>
+          <select name="jenis_iuran_id" id="p_jenis" class="form-select form-select-sm" onchange="syncNominalFromIuran()" required>
             <?php foreach ($iuranOptions as $io): ?>
-              <option value="<?= (int)$io['id'] ?>"><?= e($io['nama_iuran']) ?></option>
+              <option value="<?= (int)$io['id'] ?>" data-nominal="<?= (int)$io['nominal_default'] ?>"><?= e($io['nama_iuran']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
         <div class="col-12 col-md-5">
           <label class="form-label small fw-semibold">Nominal (Rp)</label>
-          <input type="number" name="nominal" id="p_nominal" class="form-control form-control-sm" value="100000" required>
+          <input type="number" name="nominal" id="p_nominal" class="form-control form-control-sm bg-light fw-semibold" required>
         </div>
         <div class="col-4">
           <label class="form-label small fw-semibold">Bulan</label>
@@ -523,6 +523,13 @@ function openVerifModal(data) {
   }
   bootstrap.Modal.getOrCreateInstance(document.getElementById('verifModal')).show();
 }
+function syncNominalFromIuran() {
+  const sel = document.getElementById('p_jenis');
+  const opt = sel.options[sel.selectedIndex];
+  if (opt && opt.dataset.nominal) {
+    document.getElementById('p_nominal').value = opt.dataset.nominal;
+  }
+}
 function openPayModal(data = null) {
   document.getElementById('payModalTitle').textContent = data ? 'Edit Transaksi Pembayaran' : 'Input Pembayaran Baru';
   document.getElementById('p_id').value = data ? data.id : 0;
@@ -539,7 +546,7 @@ function openPayModal(data = null) {
     document.getElementById('p_catatan').value = data.catatan || '';
   } else {
     document.getElementById('p_warga').value = '';
-    document.getElementById('p_nominal').value = 100000;
+    syncNominalFromIuran();
     document.getElementById('p_bulan').value = <?= (int)date('n') ?>;
     document.getElementById('p_tahun').value = <?= (int)date('Y') ?>;
     document.getElementById('p_metode').value = 'tunai';
