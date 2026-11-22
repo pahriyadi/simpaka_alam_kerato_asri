@@ -81,15 +81,6 @@ require_once __DIR__ . '/includes/header.php';
           <i class="bi bi-box-arrow-in-right me-1"></i> Masuk Sekarang
         </button>
       </form>
-
-      <div class="aka-card-soft p-3 mt-3 small">
-        <div class="fw-bold text-success mb-1"><i class="bi bi-info-circle me-1"></i> Akun Uji Coba (Password: <code>password123</code>)</div>
-        <div class="text-muted">
-          • Super Admin: <code>superadmin</code> / <code>081100000001</code><br>
-          • Admin RT/RW: <code>adminrt</code> / <code>081100000002</code><br>
-          • Warga (Blok D.17): <code>081234567890</code>
-        </div>
-      </div>
     </div>
   </div>
 </div>
