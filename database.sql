@@ -1,8 +1,6 @@
 -- SIMPAKA (Sistem Informasi Manajemen Perumahan Alam Kerato Asri)
 -- Database Schema & Initial Seed Data
-
-CREATE DATABASE IF NOT EXISTS `simpaka_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `simpaka_db`;
+-- Pilih database tujuan di phpMyAdmin sebelum melakukan Import.
 
 SET FOREIGN_KEY_CHECKS = 0;
 
