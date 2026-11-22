@@ -41,6 +41,16 @@ function base_url(string $path = ''): string
     return BASE_PATH . '/' . $path;
 }
 
+function full_url(string $path = ''): string
+{
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
+        || ((int)($_SERVER['SERVER_PORT'] ?? 80) === 443);
+    $scheme = $isHttps ? 'https' : 'http';
+    $host   = $_SERVER['HTTP_HOST'] ?? 'simpaka.my.id';
+    return $scheme . '://' . $host . base_url($path);
+}
+
 function redirect(string $path): never
 {
     header('Location: ' . base_url($path));

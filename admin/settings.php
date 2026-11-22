@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'save_settings') {
         $keys = [
-            'app_name', 'app_subtitle', 'nama_perumahan', 'info_rekening',
+            'app_name', 'app_subtitle', 'nama_perumahan', 'seo_description', 'info_rekening',
             'footer_branding', 'auto_notif_day', 'wa_gateway_url', 'wa_gateway_token',
             'onesignal_app_id', 'onesignal_api_key'
         ];
@@ -31,6 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $favPath = handle_image_upload($_FILES['favicon_image'] ?? [], 'branding');
             if ($favPath) {
                 set_setting('favicon_image', $favPath);
+            }
+            $ogPath = handle_image_upload($_FILES['og_image'] ?? [], 'branding');
+            if ($ogPath) {
+                set_setting('og_image', $ogPath);
             }
         } catch (Throwable $e) {
             set_flash('danger', $e->getMessage());
@@ -249,6 +253,10 @@ require_once __DIR__ . '/../includes/admin_nav.php';
       <input type="text" name="app_subtitle" class="form-control form-control-sm" value="<?= e(get_setting('app_subtitle')) ?>">
     </div>
     <div class="col-12">
+      <label class="form-label small fw-semibold">Deskripsi SEO &amp; Preview Share WhatsApp</label>
+      <textarea name="seo_description" rows="2" class="form-control form-control-sm" placeholder="Deskripsi singkat yang tampil saat link website dibagikan di WA / Google..."><?= e(get_setting('seo_description')) ?></textarea>
+    </div>
+    <div class="col-12">
       <label class="form-label small fw-semibold text-success">Footer Branding (Bisa diatur dari backend)</label>
       <input type="text" name="footer_branding" class="form-control form-control-sm" value="<?= e(get_setting('footer_branding', 'albiandra-project (perumahan alam kerato asri blok D.17)')) ?>">
     </div>
@@ -263,12 +271,20 @@ require_once __DIR__ . '/../includes/admin_nav.php';
         <small class="text-success d-block mt-1"><i class="bi bi-check-circle-fill"></i> QRIS sudah terpasang (<a href="<?= e(base_url($qris)) ?>" target="_blank">Lihat</a>)</small>
       <?php endif; ?>
     </div>
-    <div class="col-12">
+    <div class="col-12 col-md-6">
       <label class="form-label small fw-semibold">Upload Favicon Website (PNG / JPG / ICO)</label>
       <div class="d-flex align-items-center gap-2">
         <?php $curFav = get_setting('favicon_image') ?: 'assets/img/logo-aka.jpg'; ?>
         <img src="<?= e(base_url($curFav)) ?>" alt="Favicon" class="rounded border bg-white p-1" style="width:36px;height:36px;object-fit:contain;">
         <input type="file" name="favicon_image" class="form-control form-control-sm" accept="image/*,.ico">
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label class="form-label small fw-semibold">Upload Gambar Share WA / Sosmed (OG Image)</label>
+      <div class="d-flex align-items-center gap-2">
+        <?php $curOg = get_setting('og_image') ?: 'assets/img/logo-aka.jpg'; ?>
+        <img src="<?= e(base_url($curOg)) ?>" alt="OG Image" class="rounded border bg-white p-1" style="width:36px;height:36px;object-fit:cover;">
+        <input type="file" name="og_image" class="form-control form-control-sm" accept="image/*">
       </div>
     </div>
 

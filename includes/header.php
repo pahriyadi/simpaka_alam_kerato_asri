@@ -17,10 +17,15 @@ if (get_setting('auto_notif_enabled', '1') === '1') {
 }
 
 $appName     = get_setting('app_name', 'SIMPAKA');
-$appSubtitle = get_setting('app_subtitle', 'Alam Kerato Asri');
+$appSubtitle = get_setting('app_subtitle', 'Sistem Informasi Manajemen Perumahan Alam Kerato Asri');
+$seoDesc     = get_setting('seo_description') ?: (get_setting('sambutan_index') ?: 'Portal resmi informasi warga, pembayaran iuran, dan transparansi kas Perumahan Alam Kerato Asri (AKA) berbasis mobile.');
+$ogImagePath = get_setting('og_image') ?: (get_setting('favicon_image') ?: 'assets/img/logo-aka.jpg');
+$ogImageUrl  = full_url($ogImagePath);
+$currentUrl  = full_url(ltrim($_SERVER['REQUEST_URI'] ?? '', '/'));
 $user        = current_user();
 $unreadCount = $user ? count_unread_notifications((int)$user['id']) : 0;
 $pageTitle   = $pageTitle ?? $appName;
+$fullTitle   = $pageTitle . ' - ' . $appName . ' (' . $appSubtitle . ')';
 $flash       = get_flash();
 ?>
 <!doctype html>
@@ -29,6 +34,29 @@ $flash       = get_flash();
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#05682B">
+  <meta name="description" content="<?= e($seoDesc) ?>">
+  <meta name="keywords" content="SIMPAKA, Perumahan Alam Kerato Asri, AKA, Manajemen Perumahan, Iuran Warga, Kas RT RW, Sumbawa">
+  <meta name="author" content="albiandra-project">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="<?= e($currentUrl) ?>">
+
+  <!-- Open Graph / WhatsApp / Facebook Share Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="<?= e($appName) ?> - Alam Kerato Asri">
+  <meta property="og:title" content="<?= e($pageTitle) ?> - <?= e($appName) ?>">
+  <meta property="og:description" content="<?= e($seoDesc) ?>">
+  <meta property="og:url" content="<?= e($currentUrl) ?>">
+  <meta property="og:image" content="<?= e($ogImageUrl) ?>">
+  <meta property="og:image:secure_url" content="<?= e($ogImageUrl) ?>">
+  <meta property="og:image:alt" content="Logo <?= e($appName) ?> Alam Kerato Asri">
+  <meta property="og:locale" content="id_ID">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= e($pageTitle) ?> - <?= e($appName) ?>">
+  <meta name="twitter:description" content="<?= e($seoDesc) ?>">
+  <meta name="twitter:image" content="<?= e($ogImageUrl) ?>">
+
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="<?= e($appName) ?>">
@@ -37,7 +65,7 @@ $flash       = get_flash();
   <link rel="icon" href="<?= e($faviconUrl) ?>">
   <link rel="shortcut icon" href="<?= e($faviconUrl) ?>">
   <link rel="apple-touch-icon" href="<?= e($faviconUrl) ?>">
-  <title><?= e($pageTitle) ?> - <?= e($appName) ?></title>
+  <title><?= e($fullTitle) ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">

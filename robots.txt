@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /warga/
+Disallow: /config/
+Disallow: /api/
+Disallow: /cron/

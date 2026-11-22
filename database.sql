@@ -244,6 +244,8 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('info_rekening', ''),
 ('qris_image', ''),
 ('favicon_image', 'assets/img/logo-aka.jpg'),
+('og_image', 'assets/img/logo-aka.jpg'),
+('seo_description', 'SIMPAKA - Sistem Informasi Manajemen Perumahan Alam Kerato Asri. Portal informasi warga, pembayaran iuran, dan transparansi kas perumahan berbasis mobile.'),
 ('allow_bayar_bulanan', '1'),
 ('footer_branding', 'albiandra-project (perumahan alam kerato asri blok D.17)'),
 ('tampilkan_kas_publik', '0'),
