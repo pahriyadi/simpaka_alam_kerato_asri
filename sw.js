@@ -1,8 +1,11 @@
-const CACHE_NAME = 'simpaka-aka-v2';
+const CACHE_NAME = 'simpaka-aka-v3';
 const ASSETS_TO_CACHE = [
+  './',
+  './manifest.json',
   './assets/css/simpaka.css',
   './assets/js/simpaka.js',
-  './assets/img/logo-aka.jpg'
+  './assets/img/pwa-icon-192.png',
+  './assets/img/pwa-icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -36,8 +39,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body,
-    icon: './assets/img/logo-aka.jpg',
-    badge: './assets/img/logo-aka.jpg',
+    icon: './assets/img/pwa-icon-192.png',
+    badge: './assets/img/pwa-icon-192.png',
     vibrate: [200, 100, 200],
     data: { url: data.url || './warga/notifikasi' }
   };

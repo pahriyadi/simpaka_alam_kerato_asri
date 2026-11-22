@@ -5,20 +5,20 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#F3F8F5",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
   "theme_color": "#05682B",
   "icons": [
     {
-      "src": "assets/img/logo-aka.jpg",
+      "src": "assets/img/pwa-icon-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "assets/img/logo-aka.jpg",
+      "src": "assets/img/pwa-icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
