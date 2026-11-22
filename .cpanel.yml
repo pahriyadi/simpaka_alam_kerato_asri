@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/USER_CPANEL/public_html/DOMAIN_ANDA/
+    - /bin/rsync -av --exclude='.git' --exclude='.cpanel.yml' * $DEPLOYPATH

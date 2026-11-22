@@ -1,0 +1,21 @@
+# OS & Editor
+.agents/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Logs & Temporary
+*.log
+logs/
+scratch/
+
+# Local Database Override (jangan overwrite setting hosting)
+config/database.local.php
+
+# Uploaded files user/warga
+assets/uploads/bukti/*
+assets/uploads/nota/*
+assets/uploads/pengurus/*
+assets/uploads/qris/*
+!assets/uploads/**/.gitkeep

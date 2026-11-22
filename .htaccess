@@ -1,0 +1,25 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Jangan rewrite file/folder fisik yang memang ada (assets, gambar, css, js, dll)
+    # Kecuali untuk redirect .php ke URL bersih pada request GET
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{THE_REQUEST} \s/+([^\s?]+?)/index\.php(\?[^\s]*)?\s [NC]
+    RewriteRule ^ /%1/%2 [R=301,L,NE]
+
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{THE_REQUEST} \s/+index\.php(\?[^\s]*)?\s [NC]
+    RewriteRule ^ /%1 [R=301,L,NE]
+
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{THE_REQUEST} \s/+([^\s?]+)\.php(\?[^\s]*)?\s [NC]
+    RewriteRule ^ /%1%2 [R=301,L,NE]
+
+    # Rewrite internal URL tanpa .php ke file .php yang sesuai
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.+?)/?$ $1.php [L,QSA]
+</IfModule>
+
+Options -Indexes

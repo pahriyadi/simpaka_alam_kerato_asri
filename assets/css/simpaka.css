@@ -1,0 +1,472 @@
+:root {
+  --aka-dark: #03471D;
+  --aka-leaf: #05682B;
+  --aka-leaf-light: #0F8A3E;
+  --aka-mint: #EAF6EE;
+  --aka-mint-border: #CDE8D6;
+  --aka-white: #FFFFFF;
+  --aka-bg: #F3F8F5;
+  --aka-text: #111827;
+  --aka-muted: #6B7280;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--aka-bg);
+  color: var(--aka-text);
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  padding-top: 60px;
+  padding-bottom: 90px;
+  min-height: 100vh;
+}
+
+/* Mobile-First App Shell (Finapp / DANA / BRImo style) */
+.app-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px 14px 24px;
+}
+
+/* Top App Bar */
+.aka-topbar {
+  background: linear-gradient(135deg, var(--aka-dark) 0%, var(--aka-leaf) 100%);
+  color: var(--aka-white);
+  height: 58px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  box-shadow: 0 2px 12px rgba(3, 71, 29, 0.25);
+}
+
+.aka-topbar-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aka-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.aka-brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: #FFFFFF;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.aka-brand-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.aka-brand-title {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.1;
+  letter-spacing: 0.4px;
+}
+
+.aka-brand-sub {
+  font-size: 0.68rem;
+  opacity: 0.88;
+  display: block;
+}
+
+/* Hero Card ala DANA / BRImo */
+.aka-hero {
+  background: linear-gradient(145deg, var(--aka-dark) 0%, var(--aka-leaf) 60%, var(--aka-leaf-light) 100%);
+  color: var(--aka-white);
+  border-radius: 20px;
+  padding: 18px 16px;
+  box-shadow: 0 8px 22px rgba(5, 104, 43, 0.24);
+  margin-bottom: 14px;
+}
+
+.aka-wallet-card {
+  background: var(--aka-white);
+  color: var(--aka-text);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 12px;
+}
+
+.aka-card {
+  background: var(--aka-white);
+  border: 1px solid var(--aka-mint-border);
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(5, 104, 43, 0.05);
+  margin-bottom: 14px;
+}
+
+.aka-card-soft {
+  background: var(--aka-mint);
+  border: 1px solid var(--aka-mint-border);
+  border-radius: 14px;
+}
+
+/* Quick Menu Grid ala DANA / BRImo */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px 8px;
+}
+
+.quick-item {
+  background: transparent;
+  border: none;
+  border-radius: 14px;
+  padding: 6px 4px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--aka-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.quick-item:hover, .quick-item:active {
+  background: var(--aka-mint);
+  color: var(--aka-dark);
+  transform: translateY(-2px);
+}
+
+.quick-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+  background: var(--aka-mint);
+  border: 1px solid var(--aka-mint-border);
+  color: var(--aka-leaf);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 2px 6px rgba(5, 104, 43, 0.08);
+}
+
+.quick-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Override Bootstrap text-success / bg-success-subtle agar senada dengan warna daun */
+.text-success {
+  color: var(--aka-leaf) !important;
+}
+
+.bg-success-subtle {
+  background-color: var(--aka-mint) !important;
+}
+
+/* Buttons */
+.btn-aka {
+  background-color: var(--aka-leaf);
+  border-color: var(--aka-leaf);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.btn-aka:hover, .btn-aka:focus {
+  background-color: var(--aka-dark);
+  border-color: var(--aka-dark);
+  color: #fff;
+}
+
+.btn-aka-outline {
+  border: 1.5px solid var(--aka-leaf);
+  color: var(--aka-leaf);
+  background: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.btn-aka-outline:hover {
+  background: var(--aka-mint);
+  color: var(--aka-dark);
+}
+
+/* Floating Pill Bottom Navigation with Center FAB */
+.aka-bottom-nav {
+  position: fixed;
+  bottom: 10px;
+  left: 12px;
+  right: 12px;
+  max-width: 616px;
+  margin: 0 auto;
+  height: 62px;
+  background: var(--aka-white);
+  border: 1px solid var(--aka-mint-border);
+  border-radius: 24px;
+  box-shadow: 0 8px 28px rgba(3, 71, 29, 0.16);
+  z-index: 1030;
+  padding: 0 6px;
+}
+
+.aka-bottom-nav-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.aka-nav-link {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: var(--aka-muted);
+  font-size: 0.67rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 5px 4px;
+  border-radius: 14px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  position: relative;
+}
+
+.aka-nav-link i {
+  font-size: 1.18rem;
+}
+
+.aka-nav-link.active {
+  background: var(--aka-mint);
+  color: var(--aka-dark);
+}
+
+.aka-nav-link.active i {
+  color: var(--aka-leaf);
+}
+
+.aka-nav-fab-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--aka-leaf);
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.aka-nav-fab {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--aka-dark) 0%, var(--aka-leaf) 55%, var(--aka-leaf-light) 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  margin-top: -26px;
+  margin-bottom: 2px;
+  border: 4px solid var(--aka-bg);
+  box-shadow: 0 6px 16px rgba(5, 104, 43, 0.35);
+  transition: transform 0.15s ease;
+}
+
+.aka-nav-fab-wrap:active .aka-nav-fab,
+.aka-nav-fab-wrap:hover .aka-nav-fab {
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Footer Branding */
+.aka-footer {
+  text-align: center;
+  padding: 16px 12px 8px;
+  font-size: 0.78rem;
+  color: var(--aka-muted);
+}
+
+.aka-footer strong {
+  color: var(--aka-dark);
+}
+
+/* Notif Badge */
+.notif-badge {
+  position: absolute;
+  top: -3px;
+  right: -4px;
+  background: #DC2626;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+/* Table responsive tweaks */
+.table-aka thead th {
+  background-color: var(--aka-mint);
+  color: var(--aka-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--aka-mint-border);
+}
+
+.table-aka td {
+  font-size: 0.84rem;
+  vertical-align: middle;
+}
+
+/* Pagination Hijau AKA */
+.pagination .page-link {
+  color: var(--aka-leaf);
+  border-color: var(--aka-mint-border);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--aka-leaf);
+  border-color: var(--aka-leaf);
+  color: #fff;
+}
+
+/* Bottom Sheet Menu ala DANA / BRImo */
+.modal-bottom-sheet .modal-dialog {
+  margin: 0 auto;
+  max-width: 640px;
+  min-height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-bottom-sheet .modal-content {
+  border-radius: 22px 22px 0 0;
+  border: none;
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.14);
+}
+
+.sheet-handle {
+  width: 42px;
+  height: 4px;
+  border-radius: 999px;
+  background: #D1D5DB;
+  margin: 0 auto 12px;
+}
+
+/* Global Polish untuk Semua Modal CRUD Mobile-First */
+.modal:not(.modal-bottom-sheet) .modal-dialog {
+  padding: 10px;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-content {
+  border: 1px solid var(--aka-mint-border);
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: 0 18px 42px rgba(3, 71, 29, 0.22);
+}
+
+.modal:not(.modal-bottom-sheet) .modal-header {
+  background: linear-gradient(135deg, var(--aka-dark) 0%, var(--aka-leaf) 100%);
+  color: #FFFFFF;
+  padding: 14px 18px !important;
+  border-bottom: none !important;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-header .modal-title {
+  color: #FFFFFF !important;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-header .btn-close {
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-body {
+  padding: 16px 18px !important;
+  background: #FFFFFF;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-body .form-label {
+  font-size: 0.78rem;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-body .form-control,
+.modal:not(.modal-bottom-sheet) .modal-body .form-select {
+  border-radius: 10px;
+  border-color: #D1D5DB;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-body .form-control:focus,
+.modal:not(.modal-bottom-sheet) .modal-body .form-select:focus {
+  border-color: var(--aka-leaf);
+  box-shadow: 0 0 0 3px rgba(5, 104, 43, 0.14);
+}
+
+.modal:not(.modal-bottom-sheet) .modal-footer {
+  background: #F7FBF8;
+  border-top: 1px solid var(--aka-mint-border) !important;
+  padding: 12px 18px !important;
+  gap: 8px;
+}
+
+.modal:not(.modal-bottom-sheet) .modal-footer .btn {
+  border-radius: 10px;
+  padding: 7px 16px;
+  font-weight: 600;
+}
+
+/* Page Subheader */
+.aka-subbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+@media print {
+  .aka-topbar, .aka-bottom-nav, .no-print {
+    display: none !important;
+  }
+  body {
+    padding: 0 !important;
+    background: #fff !important;
+  }
+  .app-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+}
