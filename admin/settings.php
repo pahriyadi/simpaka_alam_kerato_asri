@@ -12,8 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'save_settings') {
         $keys = [
-            'app_name', 'app_subtitle', 'nama_perumahan', 'seo_description', 'info_rekening',
-            'footer_branding', 'auto_notif_day', 'wa_gateway_url', 'wa_gateway_token',
+            'app_name', 'app_subtitle', 'nama_perumahan', 'sambutan_index',
+            'alamat_perumahan', 'maps_embed_url', 'maps_link_url',
+            'seo_description', 'info_rekening', 'footer_branding',
+            'auto_notif_day', 'wa_gateway_url', 'wa_gateway_token',
             'onesignal_app_id', 'onesignal_api_key'
         ];
         foreach ($keys as $k) {
@@ -251,6 +253,22 @@ require_once __DIR__ . '/../includes/admin_nav.php';
     <div class="col-12">
       <label class="form-label small fw-semibold">Subjudul Aplikasi</label>
       <input type="text" name="app_subtitle" class="form-control form-control-sm" value="<?= e(get_setting('app_subtitle')) ?>">
+    </div>
+    <div class="col-12">
+      <label class="form-label small fw-semibold">Teks Sambutan Beranda (Index)</label>
+      <input type="text" name="sambutan_index" class="form-control form-control-sm" value="<?= e(get_setting('sambutan_index')) ?>">
+    </div>
+    <div class="col-12">
+      <label class="form-label small fw-semibold">Alamat Lengkap Perumahan</label>
+      <input type="text" name="alamat_perumahan" class="form-control form-control-sm" value="<?= e(get_setting('alamat_perumahan')) ?>">
+    </div>
+    <div class="col-12 col-md-6">
+      <label class="form-label small fw-semibold">Google Maps Embed URL (src iframe)</label>
+      <input type="url" name="maps_embed_url" class="form-control form-control-sm" placeholder="https://maps.google.com/maps?q=...&output=embed" value="<?= e(get_setting('maps_embed_url')) ?>">
+    </div>
+    <div class="col-12 col-md-6">
+      <label class="form-label small fw-semibold">Link Tombol Buka Google Maps</label>
+      <input type="url" name="maps_link_url" class="form-control form-control-sm" placeholder="https://maps.google.com/?q=..." value="<?= e(get_setting('maps_link_url')) ?>">
     </div>
     <div class="col-12">
       <label class="form-label small fw-semibold">Deskripsi SEO &amp; Preview Share WhatsApp</label>
