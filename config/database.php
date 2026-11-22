@@ -5,10 +5,21 @@ if (file_exists(__DIR__ . '/database.local.php')) {
     require_once __DIR__ . '/database.local.php';
 }
 
+$httpHost = strtolower($_SERVER['HTTP_HOST'] ?? '');
+$isLocal  = $httpHost === ''
+    ? (PHP_OS_FAMILY === 'Windows')
+    : (str_contains($httpHost, 'localhost') || str_contains($httpHost, '127.0.0.1') || str_contains($httpHost, '[::1]'));
+
 if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
-if (!defined('DB_NAME')) define('DB_NAME', 'simpaka_db');
-if (!defined('DB_USER')) define('DB_USER', 'root');
-if (!defined('DB_PASS')) define('DB_PASS', '');
+if ($isLocal) {
+    if (!defined('DB_NAME')) define('DB_NAME', 'simpaka_db');
+    if (!defined('DB_USER')) define('DB_USER', 'root');
+    if (!defined('DB_PASS')) define('DB_PASS', '');
+} else {
+    if (!defined('DB_NAME')) define('DB_NAME', 'n1579664_simpaka_kerato_asri');
+    if (!defined('DB_USER')) define('DB_USER', 'n1579664_baznassbw');
+    if (!defined('DB_PASS')) define('DB_PASS', 'kQR*8rgk');
+}
 if (!defined('DB_CHARSET')) define('DB_CHARSET', 'utf8mb4');
 
 function db(): PDO
