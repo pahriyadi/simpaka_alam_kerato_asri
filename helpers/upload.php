@@ -18,14 +18,14 @@ function handle_image_upload(array $file, string $subDir = 'bukti'): ?string
     }
 
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'ico'];
     if (!in_array($ext, $allowed, true)) {
-        throw new RuntimeException('Format gambar harus JPG, JPEG, PNG, atau WEBP.');
+        throw new RuntimeException('Format gambar harus JPG, JPEG, PNG, WEBP, atau ICO.');
     }
 
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $mime = $finfo->file($file['tmp_name']);
-    $allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
+    $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/x-icon', 'image/vnd.microsoft.icon'];
     if (!in_array($mime, $allowedMime, true)) {
         throw new RuntimeException('File yang diunggah bukan gambar yang valid.');
     }

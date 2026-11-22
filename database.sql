@@ -297,6 +297,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('sambutan_index', 'Portal resmi informasi, iuran warga, dan transparansi kas Perumahan Alam Kerato Asri berbasis mobile.'),
 ('info_rekening', 'Bank BRI: 0123-01-004567-53-1 a.n. Bendahara Paguyuban AKA\nDANA / GoPay: 081200000004'),
 ('qris_image', ''),
+('favicon_image', 'assets/img/logo-aka.jpg'),
 ('allow_bayar_bulanan', '1'),
 ('footer_branding', 'albiandra-project (perumahan alam kerato asri blok D.17)'),
 ('tampilkan_kas_publik', '1'),

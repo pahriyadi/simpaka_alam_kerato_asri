@@ -28,6 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($qrisPath) {
                 set_setting('qris_image', $qrisPath);
             }
+            $favPath = handle_image_upload($_FILES['favicon_image'] ?? [], 'branding');
+            if ($favPath) {
+                set_setting('favicon_image', $favPath);
+            }
         } catch (Throwable $e) {
             set_flash('danger', $e->getMessage());
             redirect('admin/settings.php');
@@ -258,6 +262,14 @@ require_once __DIR__ . '/../includes/admin_nav.php';
       <?php if ($qris = get_setting('qris_image')): ?>
         <small class="text-success d-block mt-1"><i class="bi bi-check-circle-fill"></i> QRIS sudah terpasang (<a href="<?= e(base_url($qris)) ?>" target="_blank">Lihat</a>)</small>
       <?php endif; ?>
+    </div>
+    <div class="col-12">
+      <label class="form-label small fw-semibold">Upload Favicon Website (PNG / JPG / ICO)</label>
+      <div class="d-flex align-items-center gap-2">
+        <?php $curFav = get_setting('favicon_image') ?: 'assets/img/logo-aka.jpg'; ?>
+        <img src="<?= e(base_url($curFav)) ?>" alt="Favicon" class="rounded border bg-white p-1" style="width:36px;height:36px;object-fit:contain;">
+        <input type="file" name="favicon_image" class="form-control form-control-sm" accept="image/*,.ico">
+      </div>
     </div>
 
     <hr class="my-2">

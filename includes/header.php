@@ -33,7 +33,10 @@ $flash       = get_flash();
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="<?= e($appName) ?>">
   <link rel="manifest" href="<?= e(base_url('manifest.json')) ?>">
-  <link rel="apple-touch-icon" href="<?= e(base_url('assets/img/logo-aka.jpg')) ?>">
+  <?php $faviconUrl = base_url(get_setting('favicon_image') ?: 'assets/img/logo-aka.jpg'); ?>
+  <link rel="icon" href="<?= e($faviconUrl) ?>">
+  <link rel="shortcut icon" href="<?= e($faviconUrl) ?>">
+  <link rel="apple-touch-icon" href="<?= e($faviconUrl) ?>">
   <title><?= e($pageTitle) ?> - <?= e($appName) ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
