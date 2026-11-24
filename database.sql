@@ -5,6 +5,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS `log_aktivitas`;
+DROP TABLE IF EXISTS `kunjungan`;
 DROP TABLE IF EXISTS `push_subscriptions`;
 DROP TABLE IF EXISTS `referensi_blok`;
 DROP TABLE IF EXISTS `referensi_rt_rw`;
@@ -197,6 +198,16 @@ CREATE TABLE `push_subscriptions` (
   PRIMARY KEY (`id`),
   KEY `idx_ps_user` (`user_id`),
   CONSTRAINT `fk_ps_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `kunjungan` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tanggal` DATE NOT NULL,
+  `ip_hash` VARCHAR(64) NOT NULL,
+  `hits` INT UNSIGNED NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_tgl_ip` (`tanggal`, `ip_hash`),
+  KEY `idx_kunjungan_tgl` (`tanggal`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `settings` (

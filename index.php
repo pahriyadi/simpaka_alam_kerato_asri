@@ -6,6 +6,40 @@ require_once __DIR__ . '/includes/header.php';
 
 $pdo = db();
 
+// Catat kunjungan harian & ambil statistik 7 hari terakhir
+$kunjunganHariIni  = 0;
+$pengunjungHariIni = 0;
+$totalKunjungan    = 0;
+$visitLabels       = [];
+$visitHits         = [];
+try {
+    $ipHash = hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0') . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? ''));
+    $pdo->prepare('INSERT INTO kunjungan (tanggal, ip_hash, hits) VALUES (CURDATE(), ?, 1) ON DUPLICATE KEY UPDATE hits = hits + 1')
+        ->execute([$ipHash]);
+
+    $todayRow = $pdo->query('SELECT COALESCE(SUM(hits), 0) AS hits, COUNT(*) AS uniq FROM kunjungan WHERE tanggal = CURDATE()')->fetch();
+    $kunjunganHariIni  = (int)($todayRow['hits'] ?? 0);
+    $pengunjungHariIni = (int)($todayRow['uniq'] ?? 0);
+    $totalKunjungan    = (int)$pdo->query('SELECT COALESCE(SUM(hits), 0) FROM kunjungan')->fetchColumn();
+
+    $vStmt = $pdo->query('SELECT tanggal, COALESCE(SUM(hits), 0) AS hits FROM kunjungan WHERE tanggal >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) GROUP BY tanggal');
+    $vMap  = [];
+    foreach ($vStmt->fetchAll() as $vr) {
+        $vMap[$vr['tanggal']] = (int)$vr['hits'];
+    }
+    for ($d = 6; $d >= 0; $d--) {
+        $tglKey        = date('Y-m-d', strtotime("-{$d} days"));
+        $visitLabels[] = date('d/m', strtotime($tglKey));
+        $visitHits[]   = $vMap[$tglKey] ?? 0;
+    }
+} catch (Throwable $e) {
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS kunjungan (id INT UNSIGNED NOT NULL AUTO_INCREMENT, tanggal DATE NOT NULL, ip_hash VARCHAR(64) NOT NULL, hits INT UNSIGNED NOT NULL DEFAULT 1, PRIMARY KEY (id), UNIQUE KEY uk_tgl_ip (tanggal, ip_hash), KEY idx_kunjungan_tgl (tanggal)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (Throwable $e2) {
+        // Abaikan jika tidak ada hak CREATE TABLE
+    }
+}
+
 // Handle aksi Tegur / Sapa ajak bayar iuran (khusus user login)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'sapa_iuran') {
     if (!$user) {
@@ -230,6 +264,30 @@ if ($user) {
     $bbWilStmt = $pdo->prepare($belumBayarSql);
     $bbWilStmt->execute($bbParams);
     $belumBayarWilayah = $bbWilStmt->fetchAll();
+
+    // Rekap jumlah iuran LUNAS masing-masing RT dan gabungan per RW (dapat dilihat semua user, admin, super admin)
+    $rekapRw = [];
+    $rtIuranStmt = $pdo->query("
+        SELECT r.rt, r.rw,
+               COALESCE(SUM(CASE WHEN p.status = 'lunas' THEN p.nominal ELSE 0 END), 0) AS total_iuran,
+               COALESCE(SUM(CASE WHEN p.status = 'lunas' AND p.bulan = {$bulanIni} AND p.tahun = {$tahunIni} THEN p.nominal ELSE 0 END), 0) AS bulan_ini
+        FROM referensi_rt_rw r
+        LEFT JOIN users u ON u.role = 'warga' AND u.status_aktif = 1 AND u.rt = r.rt AND u.rw = r.rw
+        LEFT JOIN warga_profil wp ON wp.user_id = u.id
+        LEFT JOIN pembayaran p ON p.user_id = u.id
+        WHERE r.aktif = 1
+        GROUP BY r.rw, r.rt
+        ORDER BY r.rw ASC, r.rt ASC
+    ");
+    foreach ($rtIuranStmt->fetchAll() as $rr) {
+        $rwKey = $rr['rw'];
+        if (!isset($rekapRw[$rwKey])) {
+            $rekapRw[$rwKey] = ['total_rw' => 0.0, 'bulan_rw' => 0.0, 'rt_list' => []];
+        }
+        $rekapRw[$rwKey]['total_rw']  += (float)$rr['total_iuran'];
+        $rekapRw[$rwKey]['bulan_rw']  += (float)$rr['bulan_ini'];
+        $rekapRw[$rwKey]['rt_list'][]  = $rr;
+    }
 }
 ?>
 
@@ -439,6 +497,43 @@ if ($user) {
       <canvas id="kasChart"></canvas>
     </div>
   </section>
+
+  <!-- Card Rekap Jumlah Iuran per RT & Gabungan per RW (Semua Role) -->
+  <?php if (!empty($rekapRw)): ?>
+    <section class="aka-card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h6 fw-bold text-success mb-0"><i class="bi bi-pie-chart-fill me-1"></i> Jumlah Iuran per RT &amp; Gabungan RW</h2>
+        <span class="badge bg-success-subtle text-success rounded-pill" style="font-size:0.68rem;">Lunas</span>
+      </div>
+      <div class="d-flex flex-column gap-2">
+        <?php foreach ($rekapRw as $rwNum => $rwData): ?>
+          <div class="border rounded-3 p-3 bg-white">
+            <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+              <div>
+                <span class="badge bg-success text-white rounded-pill px-3">RW <?= e($rwNum) ?></span>
+                <small class="text-muted ms-1">Gabungan RT</small>
+              </div>
+              <div class="text-end">
+                <div class="fw-bold text-success"><?= e(rupiah($rwData['total_rw'])) ?></div>
+                <small class="text-muted" style="font-size:0.7rem;">Bln ini: <?= e(rupiah($rwData['bulan_rw'])) ?></small>
+              </div>
+            </div>
+            <div class="row g-2">
+              <?php foreach ($rwData['rt_list'] as $rtItem): ?>
+                <div class="col-6">
+                  <div class="aka-card-soft p-2 px-3">
+                    <div class="fw-bold text-success" style="font-size:0.75rem;">RT <?= e($rtItem['rt']) ?> / RW <?= e($rwNum) ?></div>
+                    <div class="fw-bold text-dark small"><?= e(rupiah($rtItem['total_iuran'])) ?></div>
+                    <div class="text-muted" style="font-size:0.68rem;">Bln ini: <?= e(rupiah($rtItem['bulan_ini'])) ?></div>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </section>
+  <?php endif; ?>
 
   <?php if (is_admin_or_super($user)): ?>
     <!-- 5 Mutasi Kas Terbaru (Admin) -->
@@ -735,6 +830,23 @@ function openDetailBlokModal(title, namaRt, items) {
   <?php endif; ?>
 </section>
 
+<!-- Card & Grafik Line Kunjungan Website Hari Ini -->
+<section class="aka-card p-3 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+      <h2 class="h6 fw-bold text-success mb-0"><i class="bi bi-graph-up-arrow me-1"></i> Kunjungan Website</h2>
+      <small class="text-muted">7 hari terakhir</small>
+    </div>
+    <div class="text-end">
+      <span class="badge bg-success text-white rounded-pill px-3 py-1">Hari Ini: <?= $kunjunganHariIni ?></span>
+      <div class="text-muted mt-1" style="font-size:0.68rem;">Unik: <?= $pengunjungHariIni ?> &bull; Total: <?= $totalKunjungan ?></div>
+    </div>
+  </div>
+  <div style="height: 150px;">
+    <canvas id="visitChart"></canvas>
+  </div>
+</section>
+
 <!-- Lokasi Perumahan -->
 <section id="lokasi" class="mb-3">
   <div class="aka-card p-3">
@@ -757,53 +869,81 @@ function openDetailBlokModal(title, namaRt, items) {
   </div>
 </section>
 
-<?php if ($user): ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const ctx = document.getElementById('kasChart');
-  if (!ctx) return;
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: <?= json_encode($chartLabels) ?>,
-      datasets: [
-        {
-          label: 'Pemasukan',
-          data: <?= json_encode($chartMasuk) ?>,
-          backgroundColor: '#05682B',
-          borderRadius: 6,
-          barPercentage: 0.7
-        },
-        {
-          label: 'Pengeluaran',
-          data: <?= json_encode($chartKeluar) ?>,
-          backgroundColor: '#E11D48',
-          borderRadius: 6,
-          barPercentage: 0.7
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            font: { size: 10 },
-            callback: (v) => 'Rp ' + (v >= 1000000 ? (v / 1000000).toFixed(1) + 'jt' : (v >= 1000 ? (v / 1000) + 'rb' : v))
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: <?= json_encode($chartLabels) ?>,
+        datasets: [
+          {
+            label: 'Pemasukan',
+            data: <?= json_encode($chartMasuk) ?>,
+            backgroundColor: '#05682B',
+            borderRadius: 6,
+            barPercentage: 0.7
+          },
+          {
+            label: 'Pengeluaran',
+            data: <?= json_encode($chartKeluar) ?>,
+            backgroundColor: '#E11D48',
+            borderRadius: 6,
+            barPercentage: 0.7
           }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
         },
-        x: { ticks: { font: { size: 10 } } }
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              font: { size: 10 },
+              callback: (v) => 'Rp ' + (v >= 1000000 ? (v / 1000000).toFixed(1) + 'jt' : (v >= 1000 ? (v / 1000) + 'rb' : v))
+            }
+          },
+          x: { ticks: { font: { size: 10 } } }
+        }
       }
-    }
-  });
+    });
+  }
+
+  const vCtx = document.getElementById('visitChart');
+  if (vCtx) {
+    new Chart(vCtx, {
+      type: 'line',
+      data: {
+        labels: <?= json_encode($visitLabels) ?>,
+        datasets: [{
+          label: 'Kunjungan',
+          data: <?= json_encode($visitHits) ?>,
+          borderColor: '#05682B',
+          backgroundColor: 'rgba(5, 104, 43, 0.12)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3,
+          pointBackgroundColor: '#05682B'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } } },
+          x: { ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+  }
 });
 </script>
-<?php endif; ?>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
