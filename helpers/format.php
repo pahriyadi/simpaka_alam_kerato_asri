@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-function e(?string $str): string
+function e(string|int|float|null $str): string
 {
-    return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars((string)($str ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
 function rupiah(float|int|string|null $angka): string

@@ -280,13 +280,13 @@ if ($user) {
         ORDER BY r.rw ASC, r.rt ASC
     ");
     foreach ($rtIuranStmt->fetchAll() as $rr) {
-        $rwKey = $rr['rw'];
-        if (!isset($rekapRw[$rwKey])) {
-            $rekapRw[$rwKey] = ['total_rw' => 0.0, 'bulan_rw' => 0.0, 'rt_list' => []];
+        $rwStr = (string)$rr['rw'];
+        if (!isset($rekapRw[$rwStr])) {
+            $rekapRw[$rwStr] = ['rw' => $rwStr, 'total_rw' => 0.0, 'bulan_rw' => 0.0, 'rt_list' => []];
         }
-        $rekapRw[$rwKey]['total_rw']  += (float)$rr['total_iuran'];
-        $rekapRw[$rwKey]['bulan_rw']  += (float)$rr['bulan_ini'];
-        $rekapRw[$rwKey]['rt_list'][]  = $rr;
+        $rekapRw[$rwStr]['total_rw']  += (float)$rr['total_iuran'];
+        $rekapRw[$rwStr]['bulan_rw']  += (float)$rr['bulan_ini'];
+        $rekapRw[$rwStr]['rt_list'][]  = $rr;
     }
 }
 ?>
@@ -506,11 +506,11 @@ if ($user) {
         <span class="badge bg-success-subtle text-success rounded-pill" style="font-size:0.68rem;">Lunas</span>
       </div>
       <div class="d-flex flex-column gap-2">
-        <?php foreach ($rekapRw as $rwNum => $rwData): ?>
+        <?php foreach ($rekapRw as $rwData): $rwLabel = $rwData['rw']; ?>
           <div class="border rounded-3 p-3 bg-white">
             <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
               <div>
-                <span class="badge bg-success text-white rounded-pill px-3">RW <?= e($rwNum) ?></span>
+                <span class="badge bg-success text-white rounded-pill px-3">RW <?= e($rwLabel) ?></span>
                 <small class="text-muted ms-1">Gabungan RT</small>
               </div>
               <div class="text-end">
@@ -522,7 +522,7 @@ if ($user) {
               <?php foreach ($rwData['rt_list'] as $rtItem): ?>
                 <div class="col-6">
                   <div class="aka-card-soft p-2 px-3">
-                    <div class="fw-bold text-success" style="font-size:0.75rem;">RT <?= e($rtItem['rt']) ?> / RW <?= e($rwNum) ?></div>
+                    <div class="fw-bold text-success" style="font-size:0.75rem;">RT <?= e($rtItem['rt']) ?> / RW <?= e($rwLabel) ?></div>
                     <div class="fw-bold text-dark small"><?= e(rupiah($rtItem['total_iuran'])) ?></div>
                     <div class="text-muted" style="font-size:0.68rem;">Bln ini: <?= e(rupiah($rtItem['bulan_ini'])) ?></div>
                   </div>
