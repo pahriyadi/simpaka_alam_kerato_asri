@@ -146,9 +146,11 @@ if (is_dir($log_dir) && is_writable($log_dir)) {
     @file_put_contents($log_file, $log_entry, FILE_APPEND);
 }
 
+require_once __DIR__ . '/config/app.php';
 http_response_code($run_result['code'] === 0 ? 200 : 500);
 echo json_encode([
     'status'    => ($run_result['code'] === 0 ? 'success' : 'error'),
+    'version'   => app_version_label(),
     'timestamp' => date('Y-m-d H:i:s') . ' WITA',
     'method'    => $run_result['method'],
     'git_bin'   => $git_bin,

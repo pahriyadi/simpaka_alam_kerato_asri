@@ -21,6 +21,28 @@ $basePath = rtrim($basePath, '/');
 define('BASE_PATH', $basePath);
 define('APP_ROOT', dirname(__DIR__));
 define('UPLOAD_DIR', APP_ROOT . '/assets/uploads');
+define('APP_VERSION', 'v1.4.0');
+
+function app_version_label(): string
+{
+    $ver = APP_VERSION;
+    $headFile = APP_ROOT . '/.git/HEAD';
+    if (is_readable($headFile)) {
+        $head = trim((string)@file_get_contents($headFile));
+        if (str_starts_with($head, 'ref: ')) {
+            $refFile = APP_ROOT . '/.git/' . substr($head, 5);
+            if (is_readable($refFile)) {
+                $hash = trim((string)@file_get_contents($refFile));
+                if ($hash !== '') {
+                    $ver .= ' (' . substr($hash, 0, 7) . ')';
+                }
+            }
+        } elseif ($head !== '') {
+            $ver .= ' (' . substr($head, 0, 7) . ')';
+        }
+    }
+    return $ver;
+}
 
 function base_url(string $path = ''): string
 {

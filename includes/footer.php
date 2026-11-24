@@ -5,7 +5,7 @@ $footerBranding = get_setting('footer_branding', 'albiandra-project (perumahan a
 $appName        = get_setting('app_name', 'SIMPAKA');
 ?>
   <footer class="aka-footer">
-    <div>&copy; <?= date('Y') ?> <strong><?= e($appName) ?></strong></div>
+    <div>&copy; <?= date('Y') ?> <strong><?= e($appName) ?></strong> <span class="badge bg-success-subtle text-success rounded-pill ms-1" style="font-size:0.68rem;"><?= e(app_version_label()) ?></span></div>
     <div><?= e($footerBranding) ?></div>
   </footer>
 </main>
